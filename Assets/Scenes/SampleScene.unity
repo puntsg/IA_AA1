@@ -578,8 +578,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingBehaviours:
-  - movementBehaviour: {fileID: 0}
-    weight: 0.852
+  - movement: 2
+    weight: 1
 --- !u!4 &1644811591
 Transform:
   m_ObjectHideFlags: 0
