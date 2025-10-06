@@ -578,8 +578,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movingBehaviours:
-  - movement: 2
+  - movement: 0
+    movementBehaviour:
+      rid: 7573240522821075029
     weight: 1
+  - movement: 0
+    movementBehaviour:
+      rid: 7573240522821075029
+    weight: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 7573240522821075029
+      type: {class: Seek, ns: , asm: Assembly-CSharp}
+      data:
+        targetPos: {x: 0, y: 0}
+        seek: 0
 --- !u!4 &1644811591
 Transform:
   m_ObjectHideFlags: 0
