@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [Serializable] public class MovingType{
-    public enum EmovementBehaviour { SEEK,ARRIVE,PURSUE, WANDER}
+    public enum EmovementBehaviour { SEEK,ARRIVE,PURSUE, WANDER, FLEE}
     public EmovementBehaviour movement;
     [SerializeReference] public MovementBehaviour movementBehaviour;
     [Range(0.0F, 1.0F)]public float weight = 1f;
