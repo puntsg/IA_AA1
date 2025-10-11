@@ -14,6 +14,7 @@ public class Movement : MonoBehaviour
     [Header("Params")]
     [SerializeField]Vector3 direction;
     [SerializeField] Rigidbody2D rigidbody2D;
+    [SerializeField]float speed = 1f;
     [Header("Movements")]
     public List<MovingType> movingBehaviours;
     private void Start()
@@ -25,9 +26,9 @@ public class Movement : MonoBehaviour
         direction = Vector3.zero;
         foreach (var movingBehaviour in movingBehaviours)
         {
-            direction = movingBehaviour.movementBehaviour.getDirection(Player.instance.transform.position)*movingBehaviour.weight;
-
+            Vector3 dirToAdd = movingBehaviour.movementBehaviour.getDirection(this.transform.position, Player.instance.transform.position) *movingBehaviour.weight;
+            direction += dirToAdd;
         }
-        rigidbody2D.linearVelocity = direction;
+        rigidbody2D.linearVelocity = direction*speed*Time.deltaTime;
     }
 }
