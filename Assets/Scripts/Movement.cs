@@ -11,19 +11,23 @@ using UnityEngine;
 }
 public class Movement : MonoBehaviour
 {
+    [Header("Params")]
+    [SerializeField]Vector3 direction;
+    [SerializeField] Rigidbody2D rigidbody2D;
+    [Header("Movements")]
     public List<MovingType> movingBehaviours;
-    void Start()
+    private void Start()
     {
-        
+        rigidbody2D = GetComponent<Rigidbody2D>();
     }
-
-    // Update is called once per frame
     void Update()
     {
-        Vector3 direction = Vector3.zero;
+        direction = Vector3.zero;
         foreach (var movingBehaviour in movingBehaviours)
         {
-            direction = movingBehaviour.movementBehaviour.getDirection(this.transform.position)*movingBehaviour.weight;
+            direction = movingBehaviour.movementBehaviour.getDirection(Player.instance.transform.position)*movingBehaviour.weight;
+
         }
+        rigidbody2D.linearVelocity = direction;
     }
 }

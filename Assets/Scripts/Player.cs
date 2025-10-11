@@ -11,8 +11,10 @@ public class Player : MonoBehaviour
     [SerializeField]float speed = 1.0f;
     Rigidbody2D rigidbody;
 
+    public static Player instance;
     void Start()
     {
+        instance = this;
        rigidbody = GetComponent<Rigidbody2D>();
     }
 
