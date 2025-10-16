@@ -1,6 +1,7 @@
 
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [Serializable]
 public class MovementBehaviour
@@ -59,10 +60,32 @@ public class Wander : MovementBehaviour
 {
 
     public bool wander = true;
+    [Header("Wander Settings")]
+    public float wanderRadius = 1.5f;
+    public float wanderOffset = 2.0f;
+    public float wanderMaxChange = 0.5f;
+
+    private float wanderAngle = 0f;
+    private Vector2 lastForward = Vector2.right; 
+
     public override Vector2 getDirection(Vector2 currentPos, Vector2 targetPos) {
         this.currentPosition = currentPos;
         this.targetPosition = targetPos;
-        return new Vector2(0, 0); 
+
+        float angleDelta = Random.Range(-wanderMaxChange, wanderMaxChange);
+        wanderAngle += angleDelta;
+
+        Vector2 forward = currentDir.sqrMagnitude > 0.0001f ? currentDir.normalized : lastForward;
+
+        Vector2 circleCenter = currentPos + forward * wanderOffset;
+
+        Vector2 offset = new Vector2(Mathf.Cos(wanderAngle), Mathf.Sin(wanderAngle)) * wanderRadius;
+        Vector2 wanderTarget = circleCenter + offset;
+
+        Vector2 desiredVelocity = (wanderTarget - currentPos).normalized;
+        currentDir = desiredVelocity;
+        lastForward = desiredVelocity.sqrMagnitude > 0.0001f ? desiredVelocity : lastForward;
+        return currentDir;
     }
 }
 [Serializable]

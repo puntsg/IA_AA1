@@ -777,33 +777,23 @@ MonoBehaviour:
   rigidbody2D: {fileID: 0}
   speed: 100
   movingBehaviours:
-  - movement: 0
+  - movement: 3
     movementBehaviour:
-      rid: 7573240636970631402
-    weight: 1
-  - movement: 4
-    movementBehaviour:
-      rid: 7573240636970631399
+      rid: 8741421277591634131
     weight: 1
   references:
     version: 2
     RefIds:
-    - rid: 7573240636970631399
-      type: {class: Flee, ns: , asm: Assembly-CSharp}
+    - rid: 8741421277591634131
+      type: {class: Wander, ns: , asm: Assembly-CSharp}
       data:
         targetPosition: {x: 0, y: 0}
         currentPosition: {x: 0, y: 0}
         currentDir: {x: 0, y: 0}
-        flee: 1
-        maxDistanceToObjective: 4
-    - rid: 7573240636970631402
-      type: {class: Seek, ns: , asm: Assembly-CSharp}
-      data:
-        targetPosition: {x: 0, y: 0}
-        currentPosition: {x: 0, y: 0}
-        currentDir: {x: 0, y: 0}
-        seek: 1
-        minDistanceToObjective: 2
+        wander: 1
+        wanderRadius: 1.5
+        wanderOffset: 2
+        wanderMaxChange: 0.5
 --- !u!95 &721300410
 Animator:
   serializedVersion: 7
