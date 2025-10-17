@@ -111,3 +111,9 @@ public class Flee : MovementBehaviour
 
     }
 }
+
+[Serializable]
+public class Flocking : MovementBehaviour
+{
+
+}
