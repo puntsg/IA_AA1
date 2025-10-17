@@ -777,23 +777,20 @@ MonoBehaviour:
   rigidbody2D: {fileID: 0}
   speed: 100
   movingBehaviours:
-  - movement: 3
+  - movement: 2
     movementBehaviour:
-      rid: 8741421277591634131
+      rid: 4310250901176582216
     weight: 1
   references:
     version: 2
     RefIds:
-    - rid: 8741421277591634131
-      type: {class: Wander, ns: , asm: Assembly-CSharp}
+    - rid: 4310250901176582216
+      type: {class: Pursue, ns: , asm: Assembly-CSharp}
       data:
         targetPosition: {x: 0, y: 0}
         currentPosition: {x: 0, y: 0}
         currentDir: {x: 0, y: 0}
-        wander: 1
-        wanderRadius: 1.5
-        wanderOffset: 2
-        wanderMaxChange: 0.5
+        pursue: 1
 --- !u!95 &721300410
 Animator:
   serializedVersion: 7
@@ -859,7 +856,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: -7430925284418496231, guid: 929b03d3fc3622546a34b84ba2957e26, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

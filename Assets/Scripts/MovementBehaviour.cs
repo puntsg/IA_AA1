@@ -1,4 +1,3 @@
-
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -88,6 +87,7 @@ public class Wander : MovementBehaviour
         return currentDir;
     }
 }
+
 [Serializable]
 public class Flee : MovementBehaviour
 {
@@ -98,7 +98,7 @@ public class Flee : MovementBehaviour
     {
         this.currentPosition = currentPos;
         this.targetPosition = targetPos;
-        if (Vector3.Distance(currentPos, targetPos) < maxDistanceToObjective || maxDistanceToObjective == -1)
+        if (Vector3.Distance(currentPos, targetPos) > maxDistanceToObjective || maxDistanceToObjective == -1)
         {
             Vector3 DesiredVelocity = targetPos - currentPos;
             DesiredVelocity = DesiredVelocity.normalized;
@@ -107,5 +107,7 @@ public class Flee : MovementBehaviour
         }
         else
         { return Vector2.zero; }
+
+
     }
 }
