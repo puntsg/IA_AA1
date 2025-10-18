@@ -116,4 +116,11 @@ public class Flee : MovementBehaviour
 public class Flocking : MovementBehaviour
 {
 
+    public bool pursue = true;
+    public override Vector2 getDirection(Vector2 currentPos, Vector2 targetPos)
+    {
+        this.currentPosition = currentPos;
+        this.targetPosition = targetPos;
+        return new Vector2(0, 0);
+    }
 }
