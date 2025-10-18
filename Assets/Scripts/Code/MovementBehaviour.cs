@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
@@ -123,19 +124,72 @@ public class Flee : MovementBehaviour
 [Serializable]
 public class Flocking : MovementBehaviour
 {
-    public Vector2  acceleration = Vector2.zero;
-    public float r = 2, maxForce = .03f, maxSpeed = 2;
+        [Header("Boids (simple)")]
+        public float neighborRadius = 3.5f;    
+        public float separationRadius = 1.5f;  
+        public float separationWeight = 1.5f;
+        public float alignmentWeight = 1.0f;
+        public float cohesionWeight = 1.0f;
 
-   
-    public override Vector2 getDirection()
-    {
-        this.currentPosition = currentTransform.position;
-        this.targetPosition = targetTransform.position;
-        Rigidbody2D rigidbody2D = currentTransform.GetComponent<Rigidbody2D>();
-        rigidbody2D.linearVelocity += acceleration;
-        if(rigidbody2D.angularVelocity > maxSpeed)
-            rigidbody2D.angularVelocity = maxSpeed;
-        acceleration *= 0;
-        return rigidbody2D.linearVelocity;
+        public override Vector2 getDirection()
+        {
+            currentPosition = currentTransform.position;
+
+            var mgr = FlockManager.instance;
+            if (mgr == null || mgr.flockingObjects == null || mgr.flockingObjects.Count == 0)
+                return currentDir; 
+
+            Vector2 sep = Vector2.zero;
+            Vector2 ali = Vector2.zero;
+            Vector2 coh = Vector2.zero;
+
+            int aliCohCount = 0;
+            int sepCount = 0;
+
+            float neigh2 = neighborRadius * neighborRadius;
+            float sep2 = separationRadius * separationRadius;
+
+            foreach (var other in mgr.flockingObjects)
+            {
+                if (other == null || other == this || other.currentTransform == null) continue;
+
+                Vector2 op = (Vector2)other.currentTransform.position;
+                Vector2 toOther = op - currentPosition;
+                float d2 = toOther.sqrMagnitude;
+
+                if (d2 > 0f && d2 <= neigh2)
+                {
+                    if (other.currentDir.sqrMagnitude > 0.0001f)
+                        ali += other.currentDir.normalized;
+
+                    coh += op;
+
+                    aliCohCount++;
+                }
+
+                if (d2 > 0f && d2 < sep2)
+                {
+                    sep += (currentPosition - op) / Mathf.Sqrt(d2);
+                    sepCount++;
+                }
+            }
+
+            if (aliCohCount > 0)
+            {
+                ali /= aliCohCount;
+                coh = (coh / aliCohCount) - currentPosition; 
+            }
+
+            if (sepCount > 0)
+                sep /= sepCount;
+
+            Vector2 steer = separationWeight * sep
+                          + alignmentWeight * ali
+                          + cohesionWeight * coh;
+
+         if (steer.sqrMagnitude > 0.0001f)
+            currentDir = steer.normalized;
+
+        return currentDir;
     }
 }

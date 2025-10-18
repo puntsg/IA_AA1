@@ -15,8 +15,10 @@ public class Movement : MonoBehaviour
     [SerializeField]Vector3 direction;
     [SerializeField] Rigidbody2D rigidbody2D;
     [SerializeField]float speed = 1f;
+    [SerializeField] bool movementByAddingForces;
     [Header("Movements")]
     public List<MovingType> movingBehaviours;
+     
     private void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -30,6 +32,9 @@ public class Movement : MonoBehaviour
             Vector3 dirToAdd = movingBehaviour.movementBehaviour.getDirection() *movingBehaviour.weight;
             direction += dirToAdd;
         }
-        rigidbody2D.linearVelocity = direction*speed*Time.deltaTime;
+        if(movementByAddingForces)
+            rigidbody2D.AddForce(direction*speed*Time.deltaTime);
+        else
+            rigidbody2D.linearVelocity = direction*speed*Time.deltaTime;
     }
 }
