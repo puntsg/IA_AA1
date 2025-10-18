@@ -127,11 +127,11 @@ public class Flocking : MovementBehaviour
     public float r = 2, maxForce = .03f, maxSpeed = 2;
 
    
-    public Vector2 getDirection(Rigidbody2D rigidbody2D)
+    public override Vector2 getDirection()
     {
         this.currentPosition = currentTransform.position;
         this.targetPosition = targetTransform.position;
-
+        Rigidbody2D rigidbody2D = currentTransform.GetComponent<Rigidbody2D>();
         rigidbody2D.linearVelocity += acceleration;
         if(rigidbody2D.angularVelocity > maxSpeed)
             rigidbody2D.angularVelocity = maxSpeed;
