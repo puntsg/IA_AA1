@@ -76,6 +76,7 @@ public class MovingTypeDrawer : PropertyDrawer
             case MovingType.EmovementBehaviour.PURSUE: return new Pursue();
             case MovingType.EmovementBehaviour.WANDER: return new Wander();
             case MovingType.EmovementBehaviour.FLEE: return new Flee();
+            case MovingType.EmovementBehaviour.FLOCKING: return new Flocking();
             default: return null;
         }
     }

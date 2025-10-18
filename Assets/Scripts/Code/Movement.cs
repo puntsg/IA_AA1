@@ -26,7 +26,8 @@ public class Movement : MonoBehaviour
         direction = Vector3.zero;
         foreach (var movingBehaviour in movingBehaviours)
         {
-            Vector3 dirToAdd = movingBehaviour.movementBehaviour.getDirection(this.transform.position, Player.instance.transform.position) *movingBehaviour.weight;
+            movingBehaviour.movementBehaviour.AssignTransforms(this.transform, Player.instance.transform);    
+            Vector3 dirToAdd = movingBehaviour.movementBehaviour.getDirection() *movingBehaviour.weight;
             direction += dirToAdd;
         }
         rigidbody2D.linearVelocity = direction*speed*Time.deltaTime;
