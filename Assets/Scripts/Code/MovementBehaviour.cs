@@ -59,10 +59,24 @@ public class Arrive : MovementBehaviour
 public class Pursue : MovementBehaviour
 {
     public bool pursue = true;
+    
     public override Vector2 getDirection() {
         this.currentPosition = currentTransform.position;
         this.targetPosition = targetTransform.position;
-        return new Vector2(0, 0); 
+        
+        Vector2 targetVelocity = Player.instance.MoveInput;
+        
+        float distanceToTarget = Vector2.Distance(currentPosition, targetPosition);
+        
+        float timeToIntercept = distanceToTarget / Player.instance.Speed;
+        
+        Vector2 predictedTargetPosition = targetPosition + targetVelocity * timeToIntercept;
+        
+        Vector2 desiredVelocity = predictedTargetPosition - currentPosition;
+        desiredVelocity = desiredVelocity.normalized;
+        currentDir = desiredVelocity;
+        
+        return currentDir;
     }
 }
 

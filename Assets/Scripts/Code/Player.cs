@@ -7,8 +7,11 @@ public class Player : MonoBehaviour
     [SerializeField] Vector2 moveInput;
     public void OnMove(InputValue value){moveInput = value.Get<Vector2>();}
 
+    public Vector2 MoveInput => moveInput;
+
     [Header("Other")]
-    [SerializeField]float speed = 1.0f;
+    [SerializeField] private float speed = 1.0f;
+    public float Speed => speed;
     Rigidbody2D rigidbody;
 
     public static Player instance;
