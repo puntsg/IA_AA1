@@ -33,8 +33,8 @@ public class Movement : MonoBehaviour
             direction += dirToAdd;
         }
         if(movementByAddingForces)
-            rigidbody2D.AddForce(direction*speed*Time.deltaTime);
+            rigidbody2D.AddForce(direction*speed*Time.fixedDeltaTime);
         else
-            rigidbody2D.linearVelocity = direction*speed*Time.deltaTime;
+            rigidbody2D.linearVelocity = direction*speed*Time.fixedDeltaTime;
     }
 }

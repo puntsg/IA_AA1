@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 14097254}
   - component: {fileID: 14097253}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveInput: {x: 0, y: 0}
-  speed: 250
+  speed: 150
 --- !u!114 &14097256
 MonoBehaviour:
   m_ObjectHideFlags: 0

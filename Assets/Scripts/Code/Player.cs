@@ -23,6 +23,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        rigidbody.linearVelocity = moveInput*speed*Time.deltaTime;
+        rigidbody.linearVelocity = moveInput * speed * Time.fixedDeltaTime;
     }
 }
