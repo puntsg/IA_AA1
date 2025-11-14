@@ -21,9 +21,6 @@ public class Node
     }
 }
 
-
-
-
 public class GridMap : MonoBehaviour
 {
     public int width;
@@ -84,8 +81,11 @@ public class GridMap : MonoBehaviour
         {
             foreach (Node node in grid)
             {
-                Gizmos.color = node.walkable ? Color.green : Color.red;
+                if (!node.walkable)
+                {
+                Gizmos.color = Color.red;
                 Gizmos.DrawCube(node.worldPos, Vector3.one * (cellSize * 0.9f));
+                    }
             }
         }
     }
