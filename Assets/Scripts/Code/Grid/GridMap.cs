@@ -9,6 +9,7 @@ public class Node
 
     public int gCost, hCost;
     public Node parent;
+    public float heuristic = 0.0f;
 
     public int fCost => gCost + hCost;
 
@@ -43,6 +44,15 @@ public class GridMap : MonoBehaviour
             Node n = GetNodeFromWorldPos(mousePos);
 
             n.walkable = !n.walkable; // alternar estado
+        }
+        if (Input.GetMouseButtonDown(2))
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Node n = GetNodeFromWorldPos(mousePos);
+            if ( n.heuristic < 1.0f)
+            n.heuristic += 0.1f;
+
+            else { n.heuristic = 0.0f; }
         }
     }
 
@@ -85,7 +95,13 @@ public class GridMap : MonoBehaviour
                 {
                 Gizmos.color = Color.red;
                 Gizmos.DrawCube(node.worldPos, Vector3.one * (cellSize * 0.9f));
-                    }
+                }
+                if (node.heuristic > 0)
+                {
+                    Gizmos.color = Color.blue;
+                    Gizmos.DrawCube(node.worldPos, Vector3.one * (cellSize * 0.9f));
+                }
+
             }
         }
     }

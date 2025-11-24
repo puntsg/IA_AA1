@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 
     private Queue<Node> pathQueue = new Queue<Node>();
     private bool isMoving = false;
+    private Node currentTargetNode;
 
     void Update()
     {
@@ -33,13 +34,37 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void RecalculatePath()
+    {
+        Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
+
+        List<Node> newPath = BFS(startNode, currentTargetNode);
+        if (newPath != null)
+        {
+            pathQueue = new Queue<Node>(newPath);
+            isMoving = true;
+        }
+        else
+        {
+            pathQueue.Clear();
+            isMoving = false;
+        }
+    }
+
     void MoveAlongPath()
     {
         if (isMoving && pathQueue.Count > 0)
         {
             Node target = pathQueue.Peek();
+
+            if (!target.walkable)
+            {
+                RecalculatePath();
+                return;
+            }
+
             Vector3 targetPos = target.worldPos;
-            targetPos.z = transform.position.z; // mantener z igual
+            targetPos.z = transform.position.z;
 
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
@@ -56,7 +81,10 @@ public class PlayerController : MonoBehaviour
 
     List<Node> BFS(Node startNode, Node targetNode)
     {
-        if (!targetNode.walkable) return null;
+        if (!targetNode.walkable)
+        {
+            RecalculatePath();
+        }
 
         Queue<Node> queue = new Queue<Node>();
         HashSet<Node> visited = new HashSet<Node>();
