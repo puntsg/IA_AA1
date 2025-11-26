@@ -10,6 +10,7 @@ public class Node
     public int gCost, hCost;
     public Node parent;
     public float heuristic = 0.0f;
+    public float cost = 1.0f;
 
     public int fCost => gCost + hCost;
 
@@ -22,12 +23,15 @@ public class Node
     }
 }
 
+
+
 public class GridMap : MonoBehaviour
 {
     public int width;
     public int height;
     public float cellSize;
     public LayerMask obstacleMask;
+
 
     public Node[,] grid;
 

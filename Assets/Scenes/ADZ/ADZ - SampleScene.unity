@@ -342,6 +342,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridMap: {fileID: 1327425352}
   moveSpeed: 2
+  BFSActive: 0
+  dijkstraActive: 1
 --- !u!1 &125811607
 GameObject:
   m_ObjectHideFlags: 0

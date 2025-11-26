@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;
     private Node currentTargetNode;
 
+    public bool BFSActive = false;
+    public bool dijkstraActive = false;
     void Update()
     {
         HandleInput();
@@ -18,19 +20,20 @@ public class PlayerController : MonoBehaviour
 
     void HandleInput()
     {
-        if (Input.GetMouseButtonDown(1)) // click derecho
+        if (Input.GetMouseButtonDown(1))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Node targetNode = gridMap.GetNodeFromWorldPos(mousePos);
-
             Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
 
-            List<Node> path = BFS(startNode, targetNode);
-            if (path != null)
-            {
-                pathQueue = new Queue<Node>(path);
+            if (BFSActive)
+                pathQueue = new Queue<Node>(BFS(startNode, targetNode));
+            else if (dijkstraActive)
+                pathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
+
+            if (pathQueue.Count > 0)
                 isMoving = true;
-            }
+            currentTargetNode = targetNode;
         }
     }
 
@@ -38,31 +41,30 @@ public class PlayerController : MonoBehaviour
     {
         Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
 
-        List<Node> newPath = BFS(startNode, currentTargetNode);
-        if (newPath != null)
-        {
-            pathQueue = new Queue<Node>(newPath);
+        if (BFSActive)
+            pathQueue = new Queue<Node>(BFS(startNode, currentTargetNode));
+        else if (dijkstraActive)
+            pathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
+
+        if (pathQueue.Count > 0)
             isMoving = true;
-        }
         else
-        {
-            pathQueue.Clear();
             isMoving = false;
-        }
     }
 
     void MoveAlongPath()
     {
         if (isMoving && pathQueue.Count > 0)
         {
-            Node target = pathQueue.Peek();
-
-            if (!target.walkable)
+            // Si algún nodo del camino ya no es caminable, recalcular
+            if (pathQueue.Count > 0 && !pathQueue.Peek().walkable)
             {
                 RecalculatePath();
-                return;
+                if (pathQueue.Count == 0)
+                    return;
             }
 
+            Node target = pathQueue.Peek();
             Vector3 targetPos = target.worldPos;
             targetPos.z = transform.position.z;
 
@@ -77,6 +79,69 @@ public class PlayerController : MonoBehaviour
         {
             isMoving = false;
         }
+    }
+
+        List<Node> Dijkstra(Node startNode, Node targetNode)
+        {
+        Dictionary<Node, float> dist = new Dictionary<Node, float>();
+        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
+        HashSet<Node> visited = new HashSet<Node>();
+
+        // Inicializar distancias
+        foreach (Node n in gridMap.grid)
+            dist[n] = Mathf.Infinity;
+
+        dist[startNode] = 0f;
+
+        List<Node> pq = new List<Node> { startNode };
+
+        while (pq.Count > 0)
+        {
+            // Obtener el nodo con menor distancia
+            pq.Sort((a, b) => dist[a].CompareTo(dist[b]));
+            Node current = pq[0];
+            pq.RemoveAt(0);
+
+            if (current == targetNode)
+                return ReconstructPath(parent, startNode, targetNode);
+
+            visited.Add(current);
+
+            foreach (Node neighbor in GetNeighbors(current))
+            {
+                if (!neighbor.walkable || visited.Contains(neighbor))
+                    continue;
+
+                float newDist = dist[current] + neighbor.cost;
+
+                if (newDist < dist[neighbor])
+                {
+                    dist[neighbor] = newDist;
+                    parent[neighbor] = current;
+
+                    if (!pq.Contains(neighbor))
+                        pq.Add(neighbor);
+                }
+            }
+        }
+
+        return null; // Sin camino
+    }
+
+    // Función para reconstruir el camino
+    List<Node> ReconstructPath(Dictionary<Node, Node> parent, Node start, Node target)
+    {
+        List<Node> path = new List<Node>();
+        Node current = target;
+
+        while (current != start)
+        {
+            path.Add(current);
+            current = parent[current];
+        }
+
+        path.Reverse();
+        return path;
     }
 
     List<Node> BFS(Node startNode, Node targetNode)
