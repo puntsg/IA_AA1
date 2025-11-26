@@ -6,6 +6,7 @@ public class Node
     public int x, y;
     public Vector3 worldPos;
     public bool walkable;
+    public bool walkableDijkstra;
 
     public int gCost, hCost;
     public Node parent;
@@ -20,6 +21,13 @@ public class Node
         this.y = y;
         this.worldPos = worldPos;
         this.walkable = walkable;
+    }
+
+    public override bool Equals(object obj)
+    {
+        Node other = obj as Node;
+        if (other == null) return false;
+        return x == other.x && y == other.y;
     }
 }
 
@@ -58,6 +66,8 @@ public class GridMap : MonoBehaviour
 
             else { n.heuristic = 0.0f; }
         }
+
+
     }
 
     void CreateGrid()
