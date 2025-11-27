@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[Serializable] enum PathfindingAlgorithm { BFS, Dijkstra }
 public class PlayerController : MonoBehaviour
 {
     public GridMap gridMap; // referencia al GridMap
@@ -10,8 +13,7 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;
     private Node currentTargetNode;
 
-    public bool BFSActive = false;
-    public bool dijkstraActive = false;
+    [SerializeField] PathfindingAlgorithm algorithm = PathfindingAlgorithm.BFS;
     void Update()
     {
         HandleInput();
@@ -26,10 +28,16 @@ public class PlayerController : MonoBehaviour
             Node targetNode = gridMap.GetNodeFromWorldPos(mousePos);
             Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
 
-            if (BFSActive)
-                pathQueue = new Queue<Node>(BFS(startNode, targetNode));
-            else if (dijkstraActive)
-                pathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
+
+            switch (algorithm)
+            {
+                case PathfindingAlgorithm.BFS:
+                    pathQueue = new Queue<Node>(BFS(startNode, targetNode));
+                    break;
+                case PathfindingAlgorithm.Dijkstra:
+                    pathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
+                    break;
+            }
 
             if (pathQueue.Count > 0)
                 isMoving = true;
@@ -41,10 +49,15 @@ public class PlayerController : MonoBehaviour
     {
         Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
 
-        if (BFSActive)
-            pathQueue = new Queue<Node>(BFS(startNode, currentTargetNode));
-        else if (dijkstraActive)
-            pathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
+        switch (algorithm)
+        {
+            case PathfindingAlgorithm.BFS:
+                pathQueue = new Queue<Node>(BFS(startNode, currentTargetNode));
+                break;
+            case PathfindingAlgorithm.Dijkstra:
+                pathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
+                break;
+        }   
 
         if (pathQueue.Count > 0)
             isMoving = true;
