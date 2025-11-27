@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[Serializable] enum PathfindingAlgorithm { BFS, Dijkstra }
+[Serializable] enum PathfindingAlgorithm { GBFS, A, BFS, Dijkstra }
 public class PlayerController : MonoBehaviour
 {
     public GridMap gridMap; // referencia al GridMap
@@ -37,6 +37,12 @@ public class PlayerController : MonoBehaviour
                 case PathfindingAlgorithm.Dijkstra:
                     pathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
                     break;
+                case PathfindingAlgorithm.GBFS:
+                    pathQueue = new Queue<Node>(GBFS(startNode, targetNode));
+                    break;
+                case PathfindingAlgorithm.A:
+                    pathQueue = new Queue<Node>(A(startNode, targetNode));
+                    break;
             }
 
             if (pathQueue.Count > 0)
@@ -57,7 +63,13 @@ public class PlayerController : MonoBehaviour
             case PathfindingAlgorithm.Dijkstra:
                 pathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
                 break;
-        }   
+            case PathfindingAlgorithm.GBFS:
+                pathQueue = new Queue<Node>(GBFS(startNode, currentTargetNode));
+                break;
+            case PathfindingAlgorithm.A:
+                pathQueue = new Queue<Node>(A(startNode, currentTargetNode));
+                break;
+        }
 
         if (pathQueue.Count > 0)
             isMoving = true;
@@ -94,7 +106,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-        List<Node> Dijkstra(Node startNode, Node targetNode)
+    List<Node> GBFS(Node startNode, Node targetNode) {
+        Dictionary<Node, float> dist = new Dictionary<Node, float>();
+        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
+        HashSet<Node> visited = new HashSet<Node>();
+        return null;
+    }
+    List<Node> A(Node startNode, Node targetNode)
+    {
+        Dictionary<Node, float> dist = new Dictionary<Node, float>();
+        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
+        HashSet<Node> visited = new HashSet<Node>();
+        return null;
+    }
+    List<Node> Dijkstra(Node startNode, Node targetNode)
         {
         Dictionary<Node, float> dist = new Dictionary<Node, float>();
         Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
