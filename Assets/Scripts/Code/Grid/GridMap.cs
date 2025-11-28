@@ -5,15 +5,20 @@ public class Node
 {
     public int x, y;
     public Vector3 worldPos;
+
     public bool walkable;
     public bool walkableDijkstra;
 
     public int gCost, hCost;
     public Node parent;
+
     public float heuristic = 0.0f;
     public float cost = 1.0f;
 
     public int fCost => gCost + hCost;
+
+    // GameObject visual asociado
+    public GameObject visual;
 
     public Node(int x, int y, Vector3 worldPos, bool walkable)
     {
@@ -29,6 +34,7 @@ public class Node
         if (other == null) return false;
         return x == other.x && y == other.y;
     }
+
 }
 
 
@@ -40,6 +46,7 @@ public class GridMap : MonoBehaviour
     public float cellSize;
     public LayerMask obstacleMask;
 
+    public GameObject cellPrefab; // prefab visual
 
     public Node[,] grid;
 
@@ -50,30 +57,34 @@ public class GridMap : MonoBehaviour
 
     void Update()
     {
+        // CLICK IZQUIERDO: alternar walkable
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Node n = GetNodeFromWorldPos(mousePos);
 
-            n.walkable = !n.walkable; // alternar estado
+            n.walkable = !n.walkable;
+            UpdateNodeVisual(n);
         }
+
+        // CLICK CENTRAL: aumentar heuristic
         if (Input.GetMouseButtonDown(2))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Node n = GetNodeFromWorldPos(mousePos);
-            if ( n.heuristic < 1.0f)
-            n.heuristic += 0.1f;
 
-            else { n.heuristic = 0.0f; }
+            if (n.heuristic < 1.0f)
+                n.heuristic += 0.1f;
+            else
+                n.heuristic = 0.0f;
+
+            UpdateNodeVisual(n);
         }
-
-
     }
 
     void CreateGrid()
     {
         grid = new Node[width, height];
-
         Vector3 origin = transform.position;
 
         for (int x = 0; x < width; x++)
@@ -83,7 +94,16 @@ public class GridMap : MonoBehaviour
                 Vector3 worldPos = origin + new Vector3(x * cellSize, y * cellSize, 0);
                 bool walkable = !Physics2D.OverlapCircle(worldPos, cellSize * 0.4f, obstacleMask);
 
-                grid[x, y] = new Node(x, y, worldPos, walkable);
+                Node node = new Node(x, y, worldPos, walkable);
+                grid[x, y] = node;
+
+                // Instanciar GameObject visual
+                GameObject go = Instantiate(cellPrefab, worldPos, Quaternion.identity, transform);
+                go.transform.localScale = Vector3.one * (cellSize * 0.9f);
+
+                node.visual = go;
+
+                UpdateNodeVisual(node);
             }
         }
     }
@@ -99,24 +119,22 @@ public class GridMap : MonoBehaviour
         return grid[x, y];
     }
 
-    void OnDrawGizmos()
+    // Cambia color visual del nodo
+    void UpdateNodeVisual(Node node)
     {
-        if (grid != null)
-        {
-            foreach (Node node in grid)
-            {
-                if (!node.walkable)
-                {
-                Gizmos.color = Color.red;
-                Gizmos.DrawCube(node.worldPos, Vector3.one * (cellSize * 0.9f));
-                }
-                if (node.heuristic > 0)
-                {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawCube(node.worldPos, Vector3.one * (cellSize * 0.9f));
-                }
+        SpriteRenderer sr = node.visual.GetComponent<SpriteRenderer>();
 
-            }
+        if (!node.walkable)
+        {
+            sr.color = Color.red;
+        }
+        else if (node.heuristic > 0)
+        {
+            sr.color = Color.blue;
+        }
+        else
+        {
+            sr.color = Color.white;
         }
     }
 
@@ -125,7 +143,45 @@ public class GridMap : MonoBehaviour
         if (x >= 0 && x < width && y >= 0 && y < height)
         {
             grid[x, y].walkable = walkable;
+            UpdateNodeVisual(grid[x, y]);
+        }
+    }
+
+    public void PaintNode(Node n, Color c)
+    {
+        SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
+        sr.color = c;
+    }
+    public void RefreshNode(Node n)
+    {
+        SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
+
+        if (!n.walkable)
+            sr.color = Color.red;
+        else if (n.heuristic > 0)
+            sr.color = Color.blue;
+        else
+            sr.color = Color.white;
+    }
+
+    public void PaintPathNode(Node node)
+    {
+        if (node.visual == null) return;
+        node.visual.GetComponent<SpriteRenderer>().color = Color.green;
+    }
+
+    public void ResetAllNodeColors()
+    {
+        foreach (Node n in grid)
+        {
+            SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
+
+            if (!n.walkable)
+                sr.color = Color.red;
+            else if (n.heuristic > 0)
+                sr.color = Color.blue;
+            else
+                sr.color = Color.white;
         }
     }
 }
-
