@@ -34,6 +34,7 @@ public class Node
         if (other == null) return false;
         return x == other.x && y == other.y;
     }
+
 }
 
 
@@ -143,6 +144,44 @@ public class GridMap : MonoBehaviour
         {
             grid[x, y].walkable = walkable;
             UpdateNodeVisual(grid[x, y]);
+        }
+    }
+
+    public void PaintNode(Node n, Color c)
+    {
+        SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
+        sr.color = c;
+    }
+    public void RefreshNode(Node n)
+    {
+        SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
+
+        if (!n.walkable)
+            sr.color = Color.red;
+        else if (n.heuristic > 0)
+            sr.color = Color.blue;
+        else
+            sr.color = Color.white;
+    }
+
+    public void PaintPathNode(Node node)
+    {
+        if (node.visual == null) return;
+        node.visual.GetComponent<SpriteRenderer>().color = Color.green;
+    }
+
+    public void ResetAllNodeColors()
+    {
+        foreach (Node n in grid)
+        {
+            SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
+
+            if (!n.walkable)
+                sr.color = Color.red;
+            else if (n.heuristic > 0)
+                sr.color = Color.blue;
+            else
+                sr.color = Color.white;
         }
     }
 }
