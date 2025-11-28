@@ -56,7 +56,6 @@ public class GridMap : MonoBehaviour
 
     void Update()
     {
-        // CLICK IZQUIERDO: alternar walkable
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -66,7 +65,6 @@ public class GridMap : MonoBehaviour
             UpdateNodeVisual(n);
         }
 
-        // CLICK CENTRAL: aumentar heuristic
         if (Input.GetMouseButtonDown(2))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
