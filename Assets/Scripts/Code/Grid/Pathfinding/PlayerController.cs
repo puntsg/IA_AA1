@@ -107,9 +107,35 @@ public class PlayerController : MonoBehaviour
     }
 
     List<Node> GBFS(Node startNode, Node targetNode) {
-        Dictionary<Node, float> dist = new Dictionary<Node, float>();
-        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
+        List<Node> open = new List<Node>();
         HashSet<Node> visited = new HashSet<Node>();
+        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
+
+        open.Add(startNode);
+
+        while (open.Count > 0)
+        {
+            open.Sort((a, b) => a.heuristic.CompareTo(b.heuristic));
+            Node current = open[0];
+            open.RemoveAt(0);
+
+            if (current == targetNode)
+                return ReconstructPath(parent, startNode, targetNode);
+
+            visited.Add(current);
+
+            foreach (Node neighbor in GetNeighbors(current))
+            {
+                if (neighbor.walkable || !visited.Contains(neighbor))
+                    break;
+
+                if (!open.Contains(neighbor))
+                {
+                    parent[neighbor] = current;
+                    open.Add(neighbor);
+                }
+            }
+        }
         return null;
     }
     List<Node> A(Node startNode, Node targetNode)
