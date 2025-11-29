@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: f8d80962b54d7de46af99e167c4aa25d
+=======
+guid: ebc6c0f057ff7d4448e09c0be54267b7
+>>>>>>> origin/feature/Showing-cells-in-play
 TextureImporter:
   internalIDToNameTable:
   - first:

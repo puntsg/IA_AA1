@@ -66,7 +66,7 @@ public class GridMap : MonoBehaviour
             n.walkable = !n.walkable;
             UpdateNodeVisual(n);
         }
-
+        
         // CLICK CENTRAL: aumentar heuristic
         if (Input.GetMouseButtonDown(2))
         {
@@ -146,7 +146,6 @@ public class GridMap : MonoBehaviour
             UpdateNodeVisual(grid[x, y]);
         }
     }
-
     public void PaintNode(Node n, Color c)
     {
         SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
