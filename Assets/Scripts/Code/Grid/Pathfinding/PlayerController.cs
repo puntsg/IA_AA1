@@ -1,20 +1,20 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [Serializable] enum PathfindingAlgorithm { GBFS, A, BFS, Dijkstra }
+
 public class PlayerController : MonoBehaviour
 {
-    public GridMap gridMap; // referencia al GridMap
+    public GridMap gridMap; 
     public float moveSpeed = 2f;
 
-    private Queue<Node> pathQueue = new Queue<Node>();
-    private bool isMoving = false;
-    private Node currentTargetNode;
+    [SerializeField] private Queue<Node> pathQueue = new Queue<Node>();
+    [SerializeField] private bool isMoving = false;
+    [SerializeField] private Node currentTargetNode;
 
     [SerializeField] PathfindingAlgorithm algorithm = PathfindingAlgorithm.BFS;
+
     void Update()
     {
         HandleInput();
@@ -27,83 +27,84 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Node targetNode = gridMap.GetNodeFromWorldPos(mousePos);
-            Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
 
-            Queue<Node> newPathQueue = new Queue<Node>();
-            if (pathQueue.Count > 0)
-                startNode = pathQueue.Peek();
-            switch (algorithm)
-            {
-                case PathfindingAlgorithm.BFS:
-                    newPathQueue = new Queue<Node>(BFS(startNode, targetNode));
-                    break;
-                case PathfindingAlgorithm.Dijkstra:
-                    newPathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
-                    break;
-                case PathfindingAlgorithm.GBFS:
-                    newPathQueue = new Queue<Node>(GBFS(startNode, targetNode));
-                    break;
-                case PathfindingAlgorithm.A:
-                    newPathQueue = new Queue<Node>(A(startNode, targetNode));
-                    break;
-            }
-            
+            Node startNode;
+
             if (pathQueue.Count > 0)
             {
-                isMoving = true;
-                foreach (var node in newPathQueue)
-                    pathQueue.Enqueue(node);
+                Node[] arr = pathQueue.ToArray();
+                startNode = arr[arr.Length - 1];
             }
             else
-                pathQueue = newPathQueue;
+            {
+                startNode = gridMap.GetNodeFromWorldPos(transform.position);
+            }
+
+            List<Node> newPathList = ComputePath(startNode, targetNode);
+            if (newPathList == null || newPathList.Count == 0)
+                return;
+
+            if (pathQueue.Count > 0)
+            {
+                Node[] arr = pathQueue.ToArray();
+                Node lastExisting = arr[arr.Length - 1];
+
+                for (int i = 0; i < newPathList.Count; i++)
+                {
+                    Node n = newPathList[i];
+
+                    if (i == 0 && n == lastExisting)
+                        continue;
+
+                    pathQueue.Enqueue(n);
+                }
+            }
+            else
+            {
+                pathQueue = new Queue<Node>(newPathList);
+            }
+
             currentTargetNode = targetNode;
+            isMoving = pathQueue.Count > 0;
+
+            PaintCurrentPath();
         }
-        paintNodes();
     }
 
     void RecalculatePath()
     {
-        Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
-        Queue < Node > newPathQueue = new Queue<Node>();
-        if(pathQueue.Count > 0)
-            startNode = pathQueue.Peek();
-        
-        switch (algorithm)
+        if (currentTargetNode == null)
         {
-            case PathfindingAlgorithm.BFS:
-                newPathQueue = new Queue<Node>(BFS(startNode, currentTargetNode));
-                break;
-            case PathfindingAlgorithm.Dijkstra:
-                newPathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
-                break;
-            case PathfindingAlgorithm.GBFS:
-                newPathQueue = new Queue<Node>(GBFS(startNode, currentTargetNode));
-                break;
-            case PathfindingAlgorithm.A:
-                newPathQueue = new Queue<Node>(A(startNode, currentTargetNode));
-                break;
-        }
-        paintNodes();
-        if (pathQueue.Count > 0)
-        {
-            isMoving = true;
-            foreach (var node in newPathQueue)
-                pathQueue.Enqueue(node);
-        }
-        else
-        {
-            pathQueue = newPathQueue;
             isMoving = false;
+            pathQueue.Clear();
+            PaintCurrentPath();
+            return;
         }
 
-        
+        Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
+
+        List<Node> newPathList = ComputePath(startNode, currentTargetNode);
+
+        if (newPathList == null || newPathList.Count == 0)
+        {
+            pathQueue.Clear();
+            isMoving = false;
+            PaintCurrentPath();
+            return;
+        }
+
+        pathQueue = new Queue<Node>(newPathList);
+        isMoving = true;
+
+        PaintCurrentPath();
     }
 
     void MoveAlongPath()
     {
         if (isMoving && pathQueue.Count > 0)
         {
-            if (pathQueue.Count > 0 && !pathQueue.Peek().walkable)
+            // Si el siguiente nodo del camino ya no es walkable, intentamos recalcular
+            if (!pathQueue.Peek().walkable)
             {
                 RecalculatePath();
                 if (pathQueue.Count == 0)
@@ -113,14 +114,13 @@ public class PlayerController : MonoBehaviour
             Node target = pathQueue.Peek();
             Vector3 targetPos = target.worldPos;
             targetPos.z = transform.position.z;
-            
 
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, targetPos) < 0.01f)
             {
-                gridMap.PaintNode(target, Color.white);
                 pathQueue.Dequeue();
+                PaintCurrentPath();
             }
         }
         else
@@ -129,7 +129,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    List<Node> GBFS(Node startNode, Node targetNode) {
+    List<Node> ComputePath(Node startNode, Node targetNode)
+    {
+        switch (algorithm)
+        {
+            case PathfindingAlgorithm.BFS:
+                return BFS(startNode, targetNode);
+            case PathfindingAlgorithm.Dijkstra:
+                return Dijkstra(startNode, targetNode);
+            case PathfindingAlgorithm.GBFS:
+                return GBFS(startNode, targetNode);
+            case PathfindingAlgorithm.A:
+                return A(startNode, targetNode);
+        }
+        return null;
+    }
+
+
+    int CompareByHeuristic(Node a, Node b)
+    {
+        return a.heuristic.CompareTo(b.heuristic);
+    }
+    List<Node> GBFS(Node startNode, Node targetNode)
+    {
         List<Node> open = new List<Node>();
         HashSet<Node> visited = new HashSet<Node>();
         Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
@@ -138,7 +160,8 @@ public class PlayerController : MonoBehaviour
 
         while (open.Count > 0)
         {
-            open.Sort((a, b) => a.heuristic.CompareTo(b.heuristic));
+            open.Sort(CompareByHeuristic);
+
             Node current = open[0];
             open.RemoveAt(0);
 
@@ -149,8 +172,8 @@ public class PlayerController : MonoBehaviour
 
             foreach (Node neighbor in GetNeighbors(current))
             {
-                if (neighbor.walkable || !visited.Contains(neighbor))
-                    break;
+                if (!neighbor.walkable || visited.Contains(neighbor))
+                    continue;
 
                 if (!open.Contains(neighbor))
                 {
@@ -161,20 +184,13 @@ public class PlayerController : MonoBehaviour
         }
         return null;
     }
-    List<Node> A(Node startNode, Node targetNode)
+
+    List<Node> Dijkstra(Node startNode, Node targetNode)
     {
         Dictionary<Node, float> dist = new Dictionary<Node, float>();
         Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
         HashSet<Node> visited = new HashSet<Node>();
-        return null;
-    }
-    List<Node> Dijkstra(Node startNode, Node targetNode)
-        {
-        Dictionary<Node, float> dist = new Dictionary<Node, float>();
-        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
-        HashSet<Node> visited = new HashSet<Node>();
 
-        // Inicializar distancias
         foreach (Node n in gridMap.grid)
             dist[n] = Mathf.Infinity;
 
@@ -184,7 +200,6 @@ public class PlayerController : MonoBehaviour
 
         while (pq.Count > 0)
         {
-            // Obtener el nodo con menor distancia
             pq.Sort((a, b) => dist[a].CompareTo(dist[b]));
             Node current = pq[0];
             pq.RemoveAt(0);
@@ -215,29 +230,10 @@ public class PlayerController : MonoBehaviour
         return null; // Sin camino
     }
 
-    // Función para reconstruir el camino
-    List<Node> ReconstructPath(Dictionary<Node, Node> parent, Node start, Node target)
-    {
-        List<Node> path = new List<Node>();
-        Node current = target;
-
-        while (current != start)
-        {
-            path.Add(current);
-            current = parent[current];
-        }
-
-        path.Reverse();
-        paintNodes();
-        return path;
-    }
-
     List<Node> BFS(Node startNode, Node targetNode)
     {
         if (!targetNode.walkable)
-        {
-            RecalculatePath();
-        }
+            return null;
 
         Queue<Node> queue = new Queue<Node>();
         HashSet<Node> visited = new HashSet<Node>();
@@ -252,7 +248,6 @@ public class PlayerController : MonoBehaviour
 
             if (current == targetNode)
             {
-                // Reconstruir camino
                 List<Node> path = new List<Node>();
                 Node temp = targetNode;
                 while (temp != startNode)
@@ -277,6 +272,26 @@ public class PlayerController : MonoBehaviour
 
         return null; // no hay camino
     }
+    List<Node> A(Node startNode, Node targetNode)
+    {
+        // Aquí podrías implementar A* más adelante
+        return null;
+    }
+
+    List<Node> ReconstructPath(Dictionary<Node, Node> parent, Node start, Node target)
+    {
+        List<Node> path = new List<Node>();
+        Node current = target;
+
+        while (current != start)
+        {
+            path.Add(current);
+            current = parent[current];
+        }
+
+        path.Reverse();
+        return path;
+    }
 
     List<Node> GetNeighbors(Node node)
     {
@@ -298,11 +313,21 @@ public class PlayerController : MonoBehaviour
         return neighbors;
     }
 
-    void paintNodes()
+    void PaintCurrentPath()
     {
-        Debug.Log("Pintando nodos del camino");
-        foreach (Node n in pathQueue)
-             gridMap.PaintNode(n, Color.yellow);
-        gridMap.PaintNode(pathQueue.ToArray()[pathQueue.Count-1], Color.green);
+        gridMap.ResetAllNodeColors();
+
+        if (pathQueue.Count == 0)
+            return;
+
+        Node[] arr = pathQueue.ToArray();
+
+        for (int i = 0; i < arr.Length; i++)
+        {
+            gridMap.PaintNode(arr[i], Color.yellow);
+        }
+
+        Node last = arr[arr.Length - 1];
+        gridMap.PaintNode(last, Color.green);
     }
 }

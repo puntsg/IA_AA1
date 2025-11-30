@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-
+[Serializable]
 public class Node
 {
     public int x, y;
@@ -36,7 +37,7 @@ public class Node
 }
 
 
-
+[Serializable]
 public class GridMap : MonoBehaviour
 {
     public int width;
