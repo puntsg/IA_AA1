@@ -165,6 +165,10 @@ public class PlayerController : MonoBehaviour
             Node current = open[0];
             open.RemoveAt(0);
 
+
+            if (current.walkable)
+                current.visual.GetComponent<Renderer>().material.color = Color.cyan;
+
             if (current == targetNode)
                 return ReconstructPath(parent, startNode, targetNode);
 
@@ -203,6 +207,10 @@ public class PlayerController : MonoBehaviour
             pq.Sort((a, b) => dist[a].CompareTo(dist[b]));
             Node current = pq[0];
             pq.RemoveAt(0);
+
+
+            if (current.walkable)
+                current.visual.GetComponent<Renderer>().material.color = Color.cyan;
 
             if (current == targetNode)
                 return ReconstructPath(parent, startNode, targetNode);
@@ -245,6 +253,9 @@ public class PlayerController : MonoBehaviour
         while (queue.Count > 0)
         {
             Node current = queue.Dequeue();
+
+            if(current.walkable)
+                current.visual.GetComponent<Renderer>().material.color = Color.cyan;
 
             if (current == targetNode)
             {
