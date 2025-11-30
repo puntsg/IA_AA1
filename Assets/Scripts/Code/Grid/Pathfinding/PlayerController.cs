@@ -96,14 +96,12 @@ public class PlayerController : MonoBehaviour
         pathQueue = new Queue<Node>(newPathList);
         isMoving = true;
 
-        PaintCurrentPath();
     }
 
     void MoveAlongPath()
     {
         if (isMoving && pathQueue.Count > 0)
         {
-            // Si el siguiente nodo del camino ya no es walkable, intentamos recalcular
             if (!pathQueue.Peek().walkable)
             {
                 RecalculatePath();
@@ -125,10 +123,25 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            gridMap.ResetAllNodeColors();
             isMoving = false;
         }
     }
+    void PaintCurrentPath()
+    {
 
+        if (pathQueue.Count == 0)
+            return;
+
+        Node[] arr = pathQueue.ToArray();
+
+        for (int i = 0; i < arr.Length; i++)
+        {
+            gridMap.PaintNode(arr[i], new Color(1f, 0.7f, 0f));
+        }
+
+        gridMap.PaintNode(arr[arr.Length - 1], Color.green);
+    }
     List<Node> ComputePath(Node startNode, Node targetNode)
     {
         switch (algorithm)
@@ -167,7 +180,7 @@ public class PlayerController : MonoBehaviour
 
 
             if (current.walkable)
-                current.visual.GetComponent<Renderer>().material.color = Color.cyan;
+                current.visual.GetComponent<SpriteRenderer>().color = Color.cyan;
 
             if (current == targetNode)
                 return ReconstructPath(parent, startNode, targetNode);
@@ -210,7 +223,7 @@ public class PlayerController : MonoBehaviour
 
 
             if (current.walkable)
-                current.visual.GetComponent<Renderer>().material.color = Color.cyan;
+                current.visual.GetComponent<SpriteRenderer>().color = Color.cyan;
 
             if (current == targetNode)
                 return ReconstructPath(parent, startNode, targetNode);
@@ -255,7 +268,7 @@ public class PlayerController : MonoBehaviour
             Node current = queue.Dequeue();
 
             if(current.walkable)
-                current.visual.GetComponent<Renderer>().material.color = Color.cyan;
+                current.visual.GetComponent<SpriteRenderer>().color = Color.cyan;
 
             if (current == targetNode)
             {
@@ -281,7 +294,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        return null; // no hay camino
+        return null; 
     }
     List<Node> A(Node startNode, Node targetNode)
     {
@@ -373,25 +386,6 @@ public class PlayerController : MonoBehaviour
         return neighbors;
     }
 
-    void PaintCurrentPath()
-    {
-        gridMap.ResetAllNodeColors();
-
-        if (pathQueue.Count == 0)
-            return;
-
-        Node[] arr = pathQueue.ToArray();
-
-        for (int i = 0; i < arr.Length; i++)
-        {
-            gridMap.PaintNode(arr[i], Color.yellow);
-        }
-
-        Node last = arr[arr.Length - 1];
-        gridMap.PaintNode(last, Color.green);
-    }
-    
-    // Función heurística: Distancia Manhattan (admissible para grids con 4 direcciones)
     float Heuristic(Node a, Node b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);

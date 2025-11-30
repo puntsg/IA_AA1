@@ -45,7 +45,7 @@ public class GridMap : MonoBehaviour
     public float cellSize;
     public LayerMask obstacleMask;
 
-    public GameObject cellPrefab; // prefab visual
+    public GameObject cellPrefab; 
 
     public Node[,] grid;
 
@@ -94,7 +94,6 @@ public class GridMap : MonoBehaviour
                 Node node = new Node(x, y, worldPos, walkable);
                 grid[x, y] = node;
 
-                // Instanciar GameObject visual
                 GameObject go = Instantiate(cellPrefab, worldPos, Quaternion.identity, transform);
                 go.transform.localScale = Vector3.one * (cellSize * 0.9f);
 
@@ -115,24 +114,15 @@ public class GridMap : MonoBehaviour
 
         return grid[x, y];
     }
-
-    // Cambia color visual del nodo
     void UpdateNodeVisual(Node node)
     {
-        SpriteRenderer sr = node.visual.GetComponent<SpriteRenderer>();
-
         if (!node.walkable)
-        {
-            sr.color = Color.red;
-        }
+            PaintNode(node, Color.red);
         else if (node.heuristic > 0)
-        {
-            sr.color = Color.blue;
-        }
+            PaintNode(node, Color.blue);
         else
-        {
-            sr.color = Color.white;
-        }
+            PaintNode(node, Color.white);
+            
     }
 
     public void SetWalkable(int x, int y, bool walkable)
@@ -150,34 +140,25 @@ public class GridMap : MonoBehaviour
     }
     public void RefreshNode(Node n)
     {
-        SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
-
         if (!n.walkable)
-            sr.color = Color.red;
+            PaintNode(n, Color.red);
         else if (n.heuristic > 0)
-            sr.color = Color.blue;
+            PaintNode(n, Color.blue);
         else
-            sr.color = Color.white;
+            PaintNode(n, Color.white);
     }
 
-    public void PaintPathNode(Node node)
-    {
-        if (node.visual == null) return;
-        node.visual.GetComponent<SpriteRenderer>().color = Color.green;
-    }
 
     public void ResetAllNodeColors()
     {
         foreach (Node n in grid)
         {
-            SpriteRenderer sr = n.visual.GetComponent<SpriteRenderer>();
-
             if (!n.walkable)
-                sr.color = Color.red;
+                PaintNode(n, Color.red);
             else if (n.heuristic > 0)
-                sr.color = Color.blue;
+                PaintNode(n,Color.blue);
             else
-                sr.color = Color.white;
+                PaintNode(n,Color.white);
         }
     }
 }
