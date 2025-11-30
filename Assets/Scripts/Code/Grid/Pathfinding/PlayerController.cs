@@ -326,6 +326,9 @@ public class PlayerController : MonoBehaviour
             if (current == targetNode)
                 return ReconstructPath(parent, startNode, targetNode);
 
+            if (current.walkable)
+                current.visual.GetComponent<SpriteRenderer>().color = Color.cyan;
+
             closedSet.Add(current);
 
             foreach (Node neighbor in GetNeighbors(current))
