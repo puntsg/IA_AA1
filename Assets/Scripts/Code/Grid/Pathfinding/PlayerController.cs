@@ -274,7 +274,56 @@ public class PlayerController : MonoBehaviour
     }
     List<Node> A(Node startNode, Node targetNode)
     {
-        // Aquí podrías implementar A* más adelante
+        if (!targetNode.walkable)
+            return null;
+
+        Dictionary<Node, float> gScore = new Dictionary<Node, float>();
+        Dictionary<Node, float> fScore = new Dictionary<Node, float>();
+        Dictionary<Node, Node> parent = new Dictionary<Node, Node>();
+        HashSet<Node> closedSet = new HashSet<Node>();
+        
+        foreach (Node n in gridMap.grid)
+        {
+            gScore[n] = Mathf.Infinity;
+            fScore[n] = Mathf.Infinity;
+        }
+        
+        gScore[startNode] = 0f;
+        fScore[startNode] = Heuristic(startNode, targetNode);
+        
+        List<Node> openList = new List<Node> { startNode };
+
+        while (openList.Count > 0)
+        {
+            openList.Sort((a, b) => fScore[a].CompareTo(fScore[b]));
+            Node current = openList[0];
+            openList.RemoveAt(0);
+            
+            if (current == targetNode)
+                return ReconstructPath(parent, startNode, targetNode);
+
+            closedSet.Add(current);
+
+            foreach (Node neighbor in GetNeighbors(current))
+            {
+                if (!neighbor.walkable || closedSet.Contains(neighbor))
+                    continue;
+                
+                float tentativeGScore = gScore[current] + neighbor.cost;
+                
+                if (tentativeGScore < gScore[neighbor])
+                {
+                    parent[neighbor] = current;
+                    gScore[neighbor] = tentativeGScore;
+                    
+                    fScore[neighbor] = tentativeGScore + Heuristic(neighbor, targetNode);
+
+                    
+                    if (!openList.Contains(neighbor))
+                        openList.Add(neighbor);
+                }
+            }
+        }
         return null;
     }
 
@@ -329,5 +378,11 @@ public class PlayerController : MonoBehaviour
 
         Node last = arr[arr.Length - 1];
         gridMap.PaintNode(last, Color.green);
+    }
+    
+    // FunciÃ³n heurÃ­stica: Distancia Manhattan (admissible para grids con 4 direcciones)
+    float Heuristic(Node a, Node b)
+    {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 }
