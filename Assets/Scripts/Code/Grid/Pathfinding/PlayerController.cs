@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,60 +29,80 @@ public class PlayerController : MonoBehaviour
             Node targetNode = gridMap.GetNodeFromWorldPos(mousePos);
             Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
 
-
+            Queue<Node> newPathQueue = new Queue<Node>();
+            if (pathQueue.Count > 0)
+                startNode = pathQueue.Peek();
             switch (algorithm)
             {
                 case PathfindingAlgorithm.BFS:
-                    pathQueue = new Queue<Node>(BFS(startNode, targetNode));
+                    newPathQueue = new Queue<Node>(BFS(startNode, targetNode));
                     break;
                 case PathfindingAlgorithm.Dijkstra:
-                    pathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
+                    newPathQueue = new Queue<Node>(Dijkstra(startNode, targetNode));
                     break;
                 case PathfindingAlgorithm.GBFS:
-                    pathQueue = new Queue<Node>(GBFS(startNode, targetNode));
+                    newPathQueue = new Queue<Node>(GBFS(startNode, targetNode));
                     break;
                 case PathfindingAlgorithm.A:
-                    pathQueue = new Queue<Node>(A(startNode, targetNode));
+                    newPathQueue = new Queue<Node>(A(startNode, targetNode));
                     break;
             }
-
+            
             if (pathQueue.Count > 0)
+            {
                 isMoving = true;
+                foreach (var node in newPathQueue)
+                    pathQueue.Enqueue(node);
+            }
+            else
+                pathQueue = newPathQueue;
             currentTargetNode = targetNode;
         }
+        paintNodes();
     }
 
     void RecalculatePath()
     {
         Node startNode = gridMap.GetNodeFromWorldPos(transform.position);
-
+        Queue < Node > newPathQueue = new Queue<Node>();
+        if(pathQueue.Count > 0)
+            startNode = pathQueue.Peek();
+        
         switch (algorithm)
         {
             case PathfindingAlgorithm.BFS:
-                pathQueue = new Queue<Node>(BFS(startNode, currentTargetNode));
+                newPathQueue = new Queue<Node>(BFS(startNode, currentTargetNode));
                 break;
             case PathfindingAlgorithm.Dijkstra:
-                pathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
+                newPathQueue = new Queue<Node>(Dijkstra(startNode, currentTargetNode));
                 break;
             case PathfindingAlgorithm.GBFS:
-                pathQueue = new Queue<Node>(GBFS(startNode, currentTargetNode));
+                newPathQueue = new Queue<Node>(GBFS(startNode, currentTargetNode));
                 break;
             case PathfindingAlgorithm.A:
-                pathQueue = new Queue<Node>(A(startNode, currentTargetNode));
+                newPathQueue = new Queue<Node>(A(startNode, currentTargetNode));
                 break;
         }
-
+        paintNodes();
         if (pathQueue.Count > 0)
+        {
             isMoving = true;
+            foreach (var node in newPathQueue)
+                pathQueue.Enqueue(node);
+        }
         else
+        {
+            pathQueue = newPathQueue;
             isMoving = false;
+        }
+
+        
     }
 
     void MoveAlongPath()
     {
         if (isMoving && pathQueue.Count > 0)
         {
-            // Si algún nodo del camino ya no es caminable, recalcular
             if (pathQueue.Count > 0 && !pathQueue.Peek().walkable)
             {
                 RecalculatePath();
@@ -92,11 +113,13 @@ public class PlayerController : MonoBehaviour
             Node target = pathQueue.Peek();
             Vector3 targetPos = target.worldPos;
             targetPos.z = transform.position.z;
+            
 
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, targetPos) < 0.01f)
             {
+                gridMap.PaintNode(target, Color.white);
                 pathQueue.Dequeue();
             }
         }
@@ -205,6 +228,7 @@ public class PlayerController : MonoBehaviour
         }
 
         path.Reverse();
+        paintNodes();
         return path;
     }
 
@@ -272,5 +296,13 @@ public class PlayerController : MonoBehaviour
         }
 
         return neighbors;
+    }
+
+    void paintNodes()
+    {
+        Debug.Log("Pintando nodos del camino");
+        foreach (Node n in pathQueue)
+             gridMap.PaintNode(n, Color.yellow);
+        gridMap.PaintNode(pathQueue.ToArray()[pathQueue.Count-1], Color.green);
     }
 }

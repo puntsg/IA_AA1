@@ -17,7 +17,6 @@ public class Node
 
     public int fCost => gCost + hCost;
 
-    // GameObject visual asociado
     public GameObject visual;
 
     public Node(int x, int y, Vector3 worldPos, bool walkable)
@@ -34,7 +33,6 @@ public class Node
         if (other == null) return false;
         return x == other.x && y == other.y;
     }
-
 }
 
 
@@ -57,7 +55,6 @@ public class GridMap : MonoBehaviour
 
     void Update()
     {
-        // CLICK IZQUIERDO: alternar walkable
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -67,7 +64,6 @@ public class GridMap : MonoBehaviour
             UpdateNodeVisual(n);
         }
         
-        // CLICK CENTRAL: aumentar heuristic
         if (Input.GetMouseButtonDown(2))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
