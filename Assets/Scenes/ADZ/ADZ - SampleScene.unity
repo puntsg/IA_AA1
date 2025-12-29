@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 14097254}
   - component: {fileID: 14097253}
   - component: {fileID: 14097259}
+  - component: {fileID: 14097260}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -342,7 +343,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridMap: {fileID: 1327425352}
   moveSpeed: 2
+  isMoving: 0
+  currentTargetNode:
+    x: 0
+    y: 0
+    worldPos: {x: 0, y: 0, z: 0}
+    walkable: 0
+    walkableDijkstra: 0
+    gCost: 0
+    hCost: 0
+    heuristic: 0
+    cost: 0
+    visual: {fileID: 0}
   algorithm: 2
+--- !u!114 &14097260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 14097252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf41704269d0fe4381abd162d89b6d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: {fileID: 0}
 --- !u!1 &125811607
 GameObject:
   m_ObjectHideFlags: 0
