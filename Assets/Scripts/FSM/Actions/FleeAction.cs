@@ -12,11 +12,10 @@ namespace FSM
         
         public override void Act(Controller controller)
         {
-            // GameObject target = controller.GetPlayer();
+            GameObject target = controller.GetTarget();
             
             Vector2 currentPosition = controller.transform.position;
-            // Vector2 targetPosition = target.transform.position;
-            Vector2 targetPosition = controller.target.transform.position;
+            Vector2 targetPosition = target.transform.position;
             
             float distanceToTarget = Vector2.Distance(currentPosition, targetPosition);
 

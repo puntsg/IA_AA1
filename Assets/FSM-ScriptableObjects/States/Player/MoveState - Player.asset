@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MoveState - Player
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: 0e1e943ac778c3b44b152612cd549ddd, type: 2}
+  - {fileID: 11400000, guid: 51b778be4012c294286690c661df352b, type: 2}
   transitions: []

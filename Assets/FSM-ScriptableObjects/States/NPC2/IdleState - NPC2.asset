@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3f85b4ca2d93cc4893fbf4d6b6d0bed, type: 3}
-  m_Name: MoveState - NPC1
+  m_Name: IdleState - NPC2
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: a6bd779009a3ce247801b288a9439f45, type: 2}
+  - {fileID: 11400000, guid: 752b80bb6965a494ca0c21c19123d886, type: 2}
   transitions: []

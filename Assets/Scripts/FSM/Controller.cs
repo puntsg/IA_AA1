@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace FSM
 {
+    public enum ObjectTypes
+    {
+        Player,
+        NPC
+    }
+    
     public class Controller : MonoBehaviour
     {
         public State currentState; //Apuntador al estado actual
         
-        public GameObject target;
+        public ObjectTypes objectType;
+        public GameObject currentTarget;
         
         public bool ActiveAI { get; set; }
         private Animator _anim;
+        
         public void Start()
         {
             ActiveAI = true;    //Para activar la IA
@@ -44,20 +52,42 @@ namespace FSM
 
         }
 
-        public GameObject GetPlayer()
-        {
-            GameObject target = null;
-            List<GameObject> objectsDetected = GetComponent<Detector>().nearbyObjects;
+        public GameObject GetTarget()
+        { 
+            switch (objectType)
+            {
+                case ObjectTypes.Player: GetPlayer(); break;
+                
+                case ObjectTypes.NPC: GetNPC(); break;
+            }
+            
+            return currentTarget;
+        }
 
-            foreach (GameObject ob in objectsDetected)
+        private void GetPlayer()
+        {
+            List<GameObject> detectedObjects = GetComponent<Detector>().nearbyObjects;
+
+            foreach (GameObject ob in detectedObjects)
             {
                 if (ob.CompareTag("Player"))
                 {
-                    target = ob;
+                    currentTarget = ob;
                 }
             }
-            
-            return target;
+        }
+
+        private void GetNPC()
+        {
+            List<GameObject> detectedObjects = GetComponent<Detector>().nearbyObjects;
+
+            foreach (GameObject ob in detectedObjects)
+            {
+                if (ob.CompareTag("NPC"))
+                {
+                    currentTarget = ob;
+                }
+            }
         }
     }
 }
