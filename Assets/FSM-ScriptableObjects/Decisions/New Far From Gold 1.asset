@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59bed9fdc3a80b84bb0d25dea7e1c60d, type: 3}
-  m_Name: New Nearby Player
+  m_Script: {fileID: 11500000, guid: 1ca2ecf9f4524d4439e4aa47c5ec12d9, type: 3}
+  m_Name: New Far From Gold 1
   m_EditorClassIdentifier: 
-  condition: 1
-  targetDistance: 2
-  tolerance: 0.05

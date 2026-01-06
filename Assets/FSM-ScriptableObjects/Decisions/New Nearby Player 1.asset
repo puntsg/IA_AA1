@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59bed9fdc3a80b84bb0d25dea7e1c60d, type: 3}
-  m_Name: New Nearby Player
+  m_Name: New Nearby Player 1
   m_EditorClassIdentifier: 
-  condition: 1
+  condition: 0
   targetDistance: 2
   tolerance: 0.05

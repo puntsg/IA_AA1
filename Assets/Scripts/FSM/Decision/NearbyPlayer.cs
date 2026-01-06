@@ -15,14 +15,14 @@ namespace FSM
         public override bool Decide(Controller controller)
         {
             foreach (GameObject objectInList in controller.GetComponent<Detector>().nearbyObjects){
-                if (objectInList.tag.Equals("player")){
+                if (objectInList.tag.Equals("Player")){
                     float distance = Vector3.Distance(controller.transform.position, objectInList.transform.position);
                     switch (condition)
                     {
                         case EDistanceCheck.FARTHER:
-                            return (distance > tolerance);
+                            return (distance > targetDistance);
                         case EDistanceCheck.CLOSER:
-                            return (distance < tolerance);
+                            return (distance < targetDistance);
                     }
                 }
             }
