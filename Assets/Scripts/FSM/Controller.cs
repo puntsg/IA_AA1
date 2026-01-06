@@ -5,7 +5,10 @@ namespace FSM
 {
     public class Controller : MonoBehaviour
     {
-        public State currentState; //Apuntador al estado actual 
+        public State currentState; //Apuntador al estado actual
+        
+        public GameObject target;
+        
         public bool ActiveAI { get; set; }
         private Animator _anim;
         public void Start()
@@ -15,7 +18,7 @@ namespace FSM
         }
         public void Update() //Se ejecutan las accioens del estado actual
         {
-            if (!ActiveAI) return; //El parámetro permite que los estados tengan una referencia al controlador, para poder llamar a sus métods
+            if (!ActiveAI) return; //El parï¿½metro permite que los estados tengan una referencia al controlador, para poder llamar a sus mï¿½tods
            
             
             currentState.UpdateState(this); 
@@ -39,7 +42,23 @@ namespace FSM
          //   Debug.Log(animation);
             _anim.SetBool(animation, value);
 
-        } 
+        }
+
+        public GameObject GetPlayer()
+        {
+            GameObject target = null;
+            List<GameObject> objectsDetected = GetComponent<Detector>().nearbyObjects;
+
+            foreach (GameObject ob in objectsDetected)
+            {
+                if (ob.CompareTag("Player"))
+                {
+                    target = ob;
+                }
+            }
+            
+            return target;
+        }
     }
 }
      

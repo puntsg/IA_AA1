@@ -8,7 +8,6 @@ namespace FSM
         public override void Act(Controller controller)
         {
             controller.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-            Debug.Log("Hi, i'm in idle");
         }
      }
 }
