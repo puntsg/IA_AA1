@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace FSM
 {
-    [CreateAssetMenu(menuName = "FSM/Carnation/Action/FleeAction")]
+    [CreateAssetMenu(menuName = "FSM/Carnation/Action/MoveAction/FleeAction")]
     public class FleeAction : Action
     {
         public float maxDistanceToObjective = 10f;

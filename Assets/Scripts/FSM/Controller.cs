@@ -27,8 +27,7 @@ namespace FSM
         public void Update() //Se ejecutan las accioens del estado actual
         {
             if (!ActiveAI) return; //El par�metro permite que los estados tengan una referencia al controlador, para poder llamar a sus m�tods
-           
-            
+       
             currentState.UpdateState(this); 
         }
         public void Transition(State nextState)

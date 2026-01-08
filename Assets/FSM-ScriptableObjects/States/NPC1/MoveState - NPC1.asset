@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: MoveState - NPC1
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: a6bd779009a3ce247801b288a9439f45, type: 2}
-  transitions: []
+  - {fileID: 11400000, guid: 0e1e943ac778c3b44b152612cd549ddd, type: 2}
+  transitions:
+  - decision: {fileID: 11400000, guid: 08f0bf7eb40390948a0410289d1ffc4e, type: 2}
+    trueState: {fileID: 11400000, guid: 596f0a0c54a02a148a1532534a0a5414, type: 2}

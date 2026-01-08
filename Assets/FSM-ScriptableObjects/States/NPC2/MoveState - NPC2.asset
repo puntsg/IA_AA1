@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: MoveState - NPC2
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: 9d1a18b2b93bbf24ca9cf6be17273a20, type: 2}
-  transitions: []
+  - {fileID: 11400000, guid: 634973b07c7375742b58777c888712c0, type: 2}
+  transitions:
+  - decision: {fileID: 11400000, guid: 6072a9ffe1d73224c8c8baca181a3adf, type: 2}
+    trueState: {fileID: 11400000, guid: 167d4802a06d05f4ca79193f815a2d8d, type: 2}
+  - decision: {fileID: 11400000, guid: 08f0bf7eb40390948a0410289d1ffc4e, type: 2}
+    trueState: {fileID: 11400000, guid: 4d3d4f8c056116d4396c9cfdb7e0482b, type: 2}
