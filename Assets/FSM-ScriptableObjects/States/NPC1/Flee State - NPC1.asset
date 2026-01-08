@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3f85b4ca2d93cc4893fbf4d6b6d0bed, type: 3}
-  m_Name: MoveState - NPC1
+  m_Name: Flee State - NPC1
   m_EditorClassIdentifier: 
   actions:
-  - {fileID: 11400000, guid: 634973b07c7375742b58777c888712c0, type: 2}
+  - {fileID: 11400000, guid: 0e1e943ac778c3b44b152612cd549ddd, type: 2}
   transitions:
+  - decision: {fileID: 11400000, guid: aec5a7ad80257f644be367763afecc9c, type: 2}
+    trueState: {fileID: 11400000, guid: da32934ea7a86dd4ea35d8d453f46269, type: 2}
   - decision: {fileID: 11400000, guid: 08f0bf7eb40390948a0410289d1ffc4e, type: 2}
     trueState: {fileID: 11400000, guid: 596f0a0c54a02a148a1532534a0a5414, type: 2}
