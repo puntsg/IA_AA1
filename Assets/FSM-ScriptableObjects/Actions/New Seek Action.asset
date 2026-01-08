@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59bed9fdc3a80b84bb0d25dea7e1c60d, type: 3}
-  m_Name: New Nearby Player
+  m_Script: {fileID: 11500000, guid: 3584c1f163602ab419066d14053407a0, type: 3}
+  m_Name: New Seek Action
   m_EditorClassIdentifier: 
-  condition: 0
-  targetDistance: 2
+  minDistanceToObjective: 10
+  seekSpeed: 5

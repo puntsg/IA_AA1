@@ -1,28 +1,29 @@
 using UnityEngine;
 namespace FSM
 {
-    [CreateAssetMenu(menuName = "FSM/Carnation/Action/MoveAction")]
+    [CreateAssetMenu(menuName = "FSM/Carnation/Action/MoveAction/seekAction")]
     public class SeekAction : Action
     {
+        public float minDistanceToObjective = 10f;
+
+        public float seekSpeed = 5f;
+
+
         public override void Act(Controller controller)
         {
-            
-        }
-        /*public bool seek = true;
-        public float minDistanceToObjective;
-        public override Vector2 getDirection()
-        {
-            this.currentPosition = currentTransform.position;
-            this.targetPosition = targetTransform.position;
-            if (Vector3.Distance(currentPosition, targetPosition) > minDistanceToObjective)
+            GameObject target = controller.GetTarget();
+
+            Vector2 currentPosition = controller.transform.position;
+            Vector2 targetPosition = target.transform.position;
+
+            float distanceToTarget = Vector2.Distance(currentPosition, targetPosition);
+
+            if (distanceToTarget > minDistanceToObjective || minDistanceToObjective == -1)
             {
-                Vector3 DesiredVelocity = targetPosition - currentPosition;
-                DesiredVelocity = DesiredVelocity.normalized;
-                currentDir = DesiredVelocity;
-                return currentDir;
+                Vector2 seekDirection = (currentPosition - targetPosition).normalized;
+
+                controller.transform.position -= (Vector3)(seekDirection * seekSpeed * Time.deltaTime);
             }
-            else
-            { return Vector2.zero; }
-        }*/
+        }
     }
 }
